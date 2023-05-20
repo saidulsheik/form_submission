@@ -116,7 +116,7 @@
                             </div>
                         </div>
                         <div class="box-footer">
-                            <button type="reset" class="btn btn-danger">Cancel</button>
+                            <button type="reset" class="btn btn-danger">Reset</button>
                             <button type="submit" id="submit" class="btn btn-info pull-right">Create</button>
                         </div>
                     </form>

@@ -13,6 +13,28 @@
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="active">Report</li>
         </ol>
+
+        <?php
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $from_date=$_POST['from_date'];
+                $to_date=$_POST['to_date'];
+                   $result =  $db->select("SELECT
+                                                *
+                                            FROM
+                                                receipts
+                                            WHERE
+                                                DATE(entry_at) BETWEEN '".$from_date."' AND '".$to_date."'");
+            }else{
+                $from_date=date('Y-m-d');
+                $to_date=date('Y-m-d');
+                $result = $db->select("SELECT
+                        *
+                    FROM
+                        receipts
+                    WHERE
+                        DATE(entry_at) BETWEEN '".$from_date."' AND '".$to_date."'");
+            }
+        ?>
     </section>
 
     <!-- Main content -->
@@ -27,12 +49,15 @@
                     </div>
                     <!-- /.box-header -->
                     <!-- form start -->
-                    <form class="form-horizontal" id="transaction_form" method="POST">
+
+                    <form class="form-horizontal" id="transaction_form" method="POST"
+                        action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>">
                         <div class="box-body">
                             <div class="form-group col-sm-4">
                                 <label for="from_date" class="col-sm-4 control-label">From Date</label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control" name="from_date" value="" id="from_date"
+                                    <input type="date" class="form-control" name="from_date"
+                                        value="<?php echo isset($from_date)?$from_date:date('Y-m-d');?>" id="from_date"
                                         placeholder="Type Only Number">
                                 </div>
                             </div>
@@ -40,11 +65,24 @@
                             <div class="form-group col-sm-4">
                                 <label for="from_date" class="col-sm-4 control-label">To Date</label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control" name="from_date" id="from_date"
+                                    <input type="date" class="form-control" name="to_date"
+                                        value="<?php echo isset($to_date)?$to_date:date('Y-m-d');?>" id="from_date"
                                         placeholder="Type Only Number">
                                 </div>
                             </div>
+
+                            <div class="form-group col-sm-4">
+                                <div class="col-sm-4">
+                                    <button type="submit" id="submit" class="btn btn-info pull-right"><i
+                                            class="fa fa-search"></i> Search</button>
+                                </div>
+                            </div>
+
                         </div>
+                        <!--  <div class="box-footer">
+                            <button type="reset" class="btn btn-danger">Cancel</button>
+                            <button type="submit" id="submit" class="btn btn-info pull-right">Create</button>
+                        </div> -->
                     </form>
 
 
@@ -81,8 +119,8 @@
                             <tbody>
                                 <?php 
                                     
-                                    $result = $db->select('SELECT * FROM receipts');
-                                    if(!empty($result)){
+                                    
+                                if(!empty($result)){
                                      while ($row = mysqli_fetch_assoc($result)) {
                                     ?>
                                 <tr>
@@ -100,6 +138,12 @@
                                 <?php 
 
                                      }
+                                }else{
+                                ?>
+                                <tr>
+                                    <td colspan="10">No Data Found</td>
+                                </tr>
+                                <?php 
                                 }  
                                 ?>
                             </tbody>
